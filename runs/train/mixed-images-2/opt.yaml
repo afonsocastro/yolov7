@@ -1,6 +1,6 @@
 weights: yolov7-tiny.pt
 cfg: cfg/training/yolov7-tiny-custom.yaml
-data: /home/afonsocastro/visp-distrobox/dataset_preparation/mixed_dataset_2//dataset.yaml
+data: /home/afonsocastro/visp-distrobox/dataset_preparation/mixed_dataset//dataset.yaml
 hyp: data/hyp.scratch.custom.yaml
 epochs: 600
 batch_size: 32
