@@ -31,7 +31,7 @@ from utils.general import labels_to_class_weights, increment_path, labels_to_ima
     check_requirements, print_mutation, set_logging, one_cycle, colorstr
 from utils.google_utils import attempt_download
 from utils.loss import ComputeLoss, ComputeLossOTA
-from utils.plots import plot_images, plot_labels, plot_results, plot_results2, plot_results3, plot_evolution
+from utils.plots import plot_images, plot_labels, plot_results, plot_results2, plot_results3, plot_losses_results, plot_precision_results, plot_results_overlay, plot_evolution
 from utils.torch_utils import ModelEMA, select_device, intersect_dicts, torch_distributed_zero_first, is_parallel
 from utils.wandb_logging.wandb_utils import WandbLogger, check_wandb_resume
 
@@ -484,8 +484,11 @@ def train(hyp, opt, device, tb_writer=None):
         # Plots
         if plots:
             plot_results(save_dir=save_dir)  # save as results.png
-            plot_results2(save_dir=save_dir)  # save as results.png
-            plot_results3(save_dir=save_dir)  # save as results.png
+            plot_results2(save_dir=save_dir)  # save as results2.png
+            plot_results3(save_dir=save_dir)  # save as results3.png
+            plot_losses_results(save_dir=save_dir)
+            plot_precision_results(save_dir=save_dir)
+            plot_results_overlay()
             if wandb_logger.wandb:
                 files = ['results.png', 'results2.png', 'confusion_matrix.png', *[f'{x}_curve.png' for x in ('F1', 'PR', 'P', 'R')]]
                 wandb_logger.log({"Results": [wandb_logger.wandb.Image(str(save_dir / f), caption=f) for f in files

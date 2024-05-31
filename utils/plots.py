@@ -468,7 +468,6 @@ def plot_results2(start=0, stop=0, bucket='', id=(), labels=(), save_dir=''):
     fig.savefig(Path(save_dir) / 'results2.png', dpi=200)
 
 
-
 def plot_results3(start=0, stop=0, bucket='', id=(), labels=(), save_dir=''):
     # Plot training 'results*.txt'. from utils.plots import *; plot_results(save_dir='runs/train/exp')
     fig, ax = plt.subplots(1, 2, figsize=(24, 15), tight_layout=True)
@@ -502,6 +501,99 @@ def plot_results3(start=0, stop=0, bucket='', id=(), labels=(), save_dir=''):
 
     ax[1].legend()
     fig.savefig(Path(save_dir) / 'results3.png', dpi=200)
+
+
+def plot_losses_results(start=0, stop=0, save_dir=''):
+    # Box - 2
+    # Objectness - 3
+    # Classification - 4
+    # Precision - 8
+    # Recall - 9
+    # val Box - 12
+    # val Objectness - 13
+    # val Classification - 14
+    # mAP@0.5 - 10
+    # mAP@0.5:0.95 - 11
+
+    files = list(Path(save_dir).glob('results*.txt'))
+    assert len(files), 'No results.txt files found in %s, nothing to plot.' % os.path.abspath(save_dir)
+    for fi, f in enumerate(files):
+        try:
+            results = np.loadtxt(f, usecols=[2, 12], ndmin=2).T
+            n = results.shape[1]  # number of rows
+            x = range(start, min(stop, n) if stop else n)
+            y0 = results[0, x]
+            y1 = results[1, x]
+            # Create the plot
+            plt.figure(figsize=(10, 6))
+            plt.plot(x, y0, marker='.', label="Training Box Loss", linewidth=2, markersize=8)
+            plt.plot(x, y1, marker='.', label="Validation Box Loss", linewidth=2, markersize=8)
+            plt.title("Box Metric Loss", fontdict={'fontsize': 20, 'fontweight': "bold"})
+            plt.legend()
+            plt.grid(True)
+
+        except Exception as e:
+            print('Warning: Plotting error for %s; %s' % (f, e))
+
+    # ax[1].legend()
+    plt.savefig(Path(save_dir) / 'loss_box.png', dpi=200)
+
+    for fi, f in enumerate(files):
+        try:
+            results = np.loadtxt(f, usecols=[3, 13], ndmin=2).T
+            n = results.shape[1]  # number of rows
+            x = range(start, min(stop, n) if stop else n)
+            y0 = results[0, x]
+            y1 = results[1, x]
+            # Create the plot
+            plt.figure(figsize=(10, 6))
+            plt.plot(x, y0, marker='.', label="Training Objectness Loss", linewidth=2, markersize=8)
+            plt.plot(x, y1, marker='.', label="Validation Objectness Loss", linewidth=2, markersize=8)
+            plt.title("Objectness Metric Loss", fontdict={'fontsize': 20, 'fontweight': "bold"})
+            plt.legend()
+            plt.grid(True)
+
+        except Exception as e:
+            print('Warning: Plotting error for %s; %s' % (f, e))
+
+    # ax[1].legend()
+    plt.savefig(Path(save_dir) / 'loss_objectness.png', dpi=200)
+
+
+def plot_precision_results(start=0, stop=0, save_dir=''):
+    # Box - 2
+    # Objectness - 3
+    # Classification - 4
+    # Precision - 8
+    # Recall - 9
+    # val Box - 12
+    # val Objectness - 13
+    # val Classification - 14
+    # mAP@0.5 - 10
+    # mAP@0.5:0.95 - 11
+
+    files = list(Path(save_dir).glob('results*.txt'))
+    assert len(files), 'No results.txt files found in %s, nothing to plot.' % os.path.abspath(save_dir)
+    for fi, f in enumerate(files):
+        try:
+            results = np.loadtxt(f, usecols=[8, 10], ndmin=2).T
+            n = results.shape[1]  # number of rows
+            x = range(start, min(stop, n) if stop else n)
+            y0 = results[0, x]
+            y1 = results[1, x]
+            # Create the plot
+            plt.figure(figsize=(10, 6))
+            plt.plot(x, y0, marker='.', label="Training Precision", linewidth=2, markersize=8)
+            plt.plot(x, y1, marker='.', label="Validation mAP@0.5", linewidth=2, markersize=8)
+            plt.title("Precision vs mAP@0.5", fontdict={'fontsize': 20, 'fontweight': "bold"})
+            plt.legend()
+            plt.grid(True)
+
+        except Exception as e:
+            print('Warning: Plotting error for %s; %s' % (f, e))
+
+    # ax[1].legend()
+    plt.savefig(Path(save_dir) / 'precision_mAP.png', dpi=200)
 
 
 def output_to_keypoint(output):
